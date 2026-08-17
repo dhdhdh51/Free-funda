@@ -1,0 +1,6 @@
+{
+  "name": "BharatAI Business OS",
+  "description": "AI-powered multi-tenant business automation platform with CRM, lead qualification, business assistant, website chatbot, automations, proposals, and production PHP/MySQL backend architecture.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

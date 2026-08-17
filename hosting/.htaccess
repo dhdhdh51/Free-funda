@@ -1,0 +1,42 @@
+# BharatAI Business OS - Apache Configuration & Security Rules
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # Force HTTPS in production
+    # RewriteCond %{HTTPS} off
+    # RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+    # Block access to hidden files and sensitive directories
+    RewriteRule ^(\.env|\.git|\.htaccess|\.env\.example)$ - [F,L,NC]
+    RewriteRule ^(app|storage/logs|storage/uploads/private|database|docs)/ - [F,L,NC]
+
+    # Prevent direct PHP execution inside upload directories
+    RewriteRule ^storage/uploads/.*\.(php|phtml|phar|php3|php4|php5|php7|phps|cgi|pl|sh)$ - [F,L,NC]
+
+    # Route API requests to api/index.php
+    RewriteCond %{REQUEST_URI} ^/api/ [NC]
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^api/(.*)$ api/index.php?endpoint=$1 [QSA,L]
+
+    # Route frontend and standard requests
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ index.php?route=$1 [QSA,L]
+</IfModule>
+
+# Security Headers
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+    Header unset X-Powered-By
+</IfModule>
+
+# Disable Directory Browsing
+Options -Indexes
+
+# Set default charset
+AddDefaultCharset UTF-8
